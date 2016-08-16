@@ -24,7 +24,7 @@ module.exports = function(req, token, done) {
     jwt.verify(passport.accessToken, secretKey, options, function(err, decoded){
       console.log("DECODED", decoded);
       if (decoded.expiresIn <= 0){
-        return done(new Error("Authentication Token expired, please login to generate new token."), false);
+        return done(new Error("Authentication Token expired, please login to generate new token."));
       }
 
       sails.models.user.findOne({id: passport.user}).exec(function(err, user) {
