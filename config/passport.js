@@ -20,11 +20,11 @@ module.exports.passport = {
     protocol: 'basic'
   },
 
-  /*
   bearer: {
     strategy: require('passport-http-bearer').Strategy,
     protocol: 'bearer'
-  },
+  }
+    /*
   google: {
     name: 'Google',
     protocol: 'oauth2',

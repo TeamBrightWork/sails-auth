@@ -13,5 +13,6 @@
  */
 
 module.exports = function (req, res, next) {
+  console.log('Inside bearerAuth!!!')
   return passport.authenticate('bearer', { session: false })(req, res, next);
 };
