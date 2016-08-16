@@ -38,6 +38,7 @@
   "dependencies": {
     "base64url": "^1.0.6",
     "bcryptjs": "^2.2",
+    "jsonwebtoken": "^7.1.9",
     "lodash": "^3.10",
     "marlinspike": "^0.12",
     "passport": "^0.3",

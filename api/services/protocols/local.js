@@ -1,7 +1,8 @@
 var crypto = require('crypto');
-var base64URL = require('base64url');
+// var base64URL = require('base64url');
 var SAError = require('../../../lib/error/SAError.js');
-
+var jwt = require('jsonwebtoken');
+var secretKey = "nquipndnv-139enxdcjw9iufhsjkcnlaskjdf"
 /**
  * Local Authentication Protocol
  *
@@ -39,7 +40,7 @@ exports.update = function (user, next) {
  * @param {Function} next
  */
 exports.createUser = function (_user, next) {
-  var accessToken = generateToken();
+  var accessToken = generateToken(_user);
   var password = _user.password;
   delete _user.password;
 
@@ -50,7 +51,7 @@ exports.createUser = function (_user, next) {
       if (err.code === 'E_VALIDATION') {
         return next(new SAError({originalError: err}));
       }
-      
+
       return next(err);
     }
 
@@ -64,7 +65,7 @@ exports.createUser = function (_user, next) {
         if (err.code === 'E_VALIDATION') {
           err = new SAError({originalError: err});
         }
-        
+
         return user.destroy(function (destroyErr) {
           next(destroyErr || err);
         });
@@ -89,6 +90,7 @@ exports.createUser = function (_user, next) {
 exports.updateUser = function (_user, next) {
   var password = _user.password;
   delete _user.password;
+  var accessToken = generateToken(_user);
 
   var userFinder = _user.hasOwnProperty('id') ? { id: _user.id } : { username: _user.username };
 
@@ -111,6 +113,7 @@ exports.updateUser = function (_user, next) {
         ,user:user.id
       }, function(err, passport){
         passport.password = password;
+        passport.accessToken = accessToken;
         passport.save(function (err, passport) {
           if (err) {
             if (err.code === 'E_VALIDATION') {
@@ -245,6 +248,18 @@ function validateEmail (str) {
   return EMAIL_REGEX.test(str);
 }
 
-function generateToken() {
-  return base64URL(crypto.randomBytes(48));
+function generateToken(user) {
+
+  var payload = {
+    user: user.username
+  };
+  console.log("PAYLOAD", payload);
+
+  var options = {
+      expiresIn: '30 days'
+  };
+
+  return jwt.sign(payload, secretKey, options)
+  //return base64URL(crypto.randomBytes(48));
 }
+
