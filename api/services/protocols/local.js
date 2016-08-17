@@ -1,4 +1,3 @@
-var crypto = require('crypto');
 var SAError = require('../../../lib/error/SAError.js');
 /**
  * Local Authentication Protocol

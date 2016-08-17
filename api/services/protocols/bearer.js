@@ -21,8 +21,7 @@ module.exports = function(req, token, done) {
       return done(null, false);
     }
 
-    jwt.verify(passport.accessToken, secretKey, options, function(err, decoded){
-      console.log("DECODED", decoded);
+    jwt.verify(passport.accessToken, secretKey, function(err, decoded){
       if (decoded.expiresIn <= 0){
         return done(new Error("Authentication Token expired, please login to generate new token."));
       }
@@ -39,6 +38,9 @@ module.exports = function(req, token, done) {
         // delete access_token from params
         // to avoid conflicts with blueprints query builder
         delete req.query.access_token;
+        req.user = user;
+        req.session.authenticated = true;
+        req.session.passport = passport;
         return done(null, user, { scope: 'all' });
       });
     });
